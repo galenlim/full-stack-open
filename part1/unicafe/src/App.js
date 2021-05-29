@@ -18,6 +18,10 @@ const App = () => {
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
 
+  const all = good + bad + neutral
+  const average = all ? (good - bad) / all : 0
+  const positive = (all ? good / all * 100 : 0) + ' %'
+
   return (
     <div>
       <Header title='give feedback'/>
@@ -28,6 +32,9 @@ const App = () => {
       <Display label='good' frequency={good} />
       <Display label='neutral' frequency={neutral} />
       <Display label='bad' frequency={bad} />
+      <Display label='all' frequency={all} />
+      <Display label='average' frequency={average} />
+      <Display label='positive' frequency={positive} />
     </div>
   )
 }
