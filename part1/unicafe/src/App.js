@@ -13,11 +13,11 @@ const Display = (props) => (
 )
 
 const Statistics = (props) => (
-  <div>
-    <Display label='all' frequency={props.all} />
-    <Display label='average' frequency={props.average} />
-    <Display label='positive' frequency={props.positive} />
-  </div>
+      <div>
+        <Display label='all' frequency={props.all} />
+        <Display label='average' frequency={props.average} />
+        <Display label='positive' frequency={props.positive} />
+      </div>
 )
 
 const App = () => {
@@ -30,6 +30,21 @@ const App = () => {
   const average = all ? (good - bad) / all : 0
   const positive = (all ? good / all * 100 : 0) + ' %'
 
+  if(all) {
+    return (
+      <div>
+        <Header title='give feedback'/>
+        <Button text='good' handleClick={() => setGood(good + 1)}/>
+        <Button text='neutral' handleClick={() => setNeutral(neutral + 1)}/>
+        <Button text='bad' handleClick={() => setBad(bad + 1)}/>
+        <Header title='statistics'/>
+        <Display label='good' frequency={good} />
+        <Display label='neutral' frequency={neutral} />
+        <Display label='bad' frequency={bad} />
+        <Statistics all={all} average={average} positive={positive} />
+      </div>
+    )
+  }
   return (
     <div>
       <Header title='give feedback'/>
@@ -37,10 +52,7 @@ const App = () => {
       <Button text='neutral' handleClick={() => setNeutral(neutral + 1)}/>
       <Button text='bad' handleClick={() => setBad(bad + 1)}/>
       <Header title='statistics'/>
-      <Display label='good' frequency={good} />
-      <Display label='neutral' frequency={neutral} />
-      <Display label='bad' frequency={bad} />
-      <Statistics all={all} average={average} positive={positive} />
+      No feedback given
     </div>
   )
 }
