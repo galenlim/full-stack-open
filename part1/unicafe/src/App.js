@@ -8,9 +8,17 @@ const Button = (props) => (
   <button onClick={props.handleClick}>{props.text}</button>
  )
 
- const Display = (props) => (
-   <div>{props.label} {props.frequency}</div>
- )
+const Display = (props) => (
+  <div>{props.label} {props.frequency}</div>
+)
+
+const Statistics = (props) => (
+  <div>
+    <Display label='all' frequency={props.all} />
+    <Display label='average' frequency={props.average} />
+    <Display label='positive' frequency={props.positive} />
+  </div>
+)
 
 const App = () => {
   // save clicks of each button to its own state
@@ -32,9 +40,7 @@ const App = () => {
       <Display label='good' frequency={good} />
       <Display label='neutral' frequency={neutral} />
       <Display label='bad' frequency={bad} />
-      <Display label='all' frequency={all} />
-      <Display label='average' frequency={average} />
-      <Display label='positive' frequency={positive} />
+      <Statistics all={all} average={average} positive={positive} />
     </div>
   )
 }
