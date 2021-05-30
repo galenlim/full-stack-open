@@ -1,5 +1,9 @@
 import React, { useState } from 'react'
 
+const Header = (props) => (
+  <h1>{props.title}</h1>
+)
+
 const Button = (props) => (
   <button onClick={props.handleClick}>
     {props.text}
@@ -31,14 +35,16 @@ const App = () => {
 
   return (
     <div>
+      <Header title='Anecodote of the day' />
       {anecdotes[selected]}
-      <p>
-        has {points[selected]} votes
-      </p>
+      <p>has {points[selected]} votes</p>
       <p>
         <Button text='vote' handleClick={() => setPoints(updateVotes)} />
         <Button text='next anecdote' handleClick={() => setSelected(randomNumber(0, anecdotes.length))} />
       </p>
+      <Header title='Anecodote with most votes' />
+      {anecdotes[points.indexOf(Math.max(...points))]}
+      <p>has {Math.max(...points)} votes</p>
     </div>
   );
 }
