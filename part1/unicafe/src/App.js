@@ -8,16 +8,8 @@ const Button = (props) => (
   <button onClick={props.handleClick}>{props.text}</button>
  )
 
-const Display = (props) => (
-  <div>{props.label} {props.frequency}</div>
-)
-
 const Statistics = (props) => (
-      <div>
-        <Display label='all' frequency={props.all} />
-        <Display label='average' frequency={props.average} />
-        <Display label='positive' frequency={props.positive} />
-      </div>
+  <div>{props.text} {props.value}</div>
 )
 
 const App = () => {
@@ -38,10 +30,12 @@ const App = () => {
         <Button text='neutral' handleClick={() => setNeutral(neutral + 1)}/>
         <Button text='bad' handleClick={() => setBad(bad + 1)}/>
         <Header title='statistics'/>
-        <Display label='good' frequency={good} />
-        <Display label='neutral' frequency={neutral} />
-        <Display label='bad' frequency={bad} />
-        <Statistics all={all} average={average} positive={positive} />
+        <Statistics text='good' value={good} />
+        <Statistics text='neutral' value={neutral} />
+        <Statistics text='bad' value={bad} />
+        <Statistics text='all' value={all} />
+        <Statistics text='average' value={average} />
+        <Statistics text='positive' value={positive} />
       </div>
     )
   }
