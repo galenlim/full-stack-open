@@ -4,11 +4,11 @@ import axios from 'axios'
 const SearchForm = (props) => {
 
   return (
-    <div>find countries <input type='text' onChange={props.handler}/></div>
+    <div>find countries <input type='text' onChange={props.handler} value={props.value} /></div>
   )
 }
 
-const FilterResult = ({ countries, filterText }) => {
+const FilterResult = ({ countries, filterText, handler }) => {
   if (!countries) {
     return <div><CountryDisplay /></div>
   }
@@ -24,8 +24,20 @@ const FilterResult = ({ countries, filterText }) => {
 
   return (
     <div>
-      {filteredCountries.map((country) => <span key={country.alpha3Code} style={{display:'block'}}>{country.name}</span>)}
+      {filteredCountries.map((country) => 
+        <CountryListItem key={country.alpha3Code} country={country} handler={handler} />
+      )}
     </div>
+  )
+}
+
+const CountryListItem = ({ country, handler }) => {
+
+  return (
+    <span style={{display:'block'}}>
+      {country.name}
+      <button onClick={() => handler(country.name)}>show</button> 
+    </span>
   )
 }
 
@@ -51,6 +63,7 @@ function App() {
   const [filterText, setFilterText] = useState('')
 
   const handleFilterTextChange = event => setFilterText(event.target.value)
+  const handleShow = (country) => setFilterText(country);
 
   useEffect(() => {
     axios
@@ -63,8 +76,8 @@ function App() {
 
   return (
     <div className="App">
-      <SearchForm handler={handleFilterTextChange} />
-      <FilterResult countries={allCountries} filterText={filterText} />
+      <SearchForm handler={handleFilterTextChange} value={filterText} />
+      <FilterResult countries={allCountries} filterText={filterText} handler={handleShow} />
     </div>
   );
 }
