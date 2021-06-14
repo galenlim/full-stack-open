@@ -76,15 +76,30 @@ const App = () => {
 
   const addName = (event) => {
     event.preventDefault()
-    const duplicateTest = persons.find((person) => person.name === newName)
+    const duplicatePerson = persons.filter((person) => person.name === newName)
 
-    if (duplicateTest) {
-      alert(`${newName} is already added to phonebook`)
+    if (duplicatePerson.length !== 0) {
+
+      if(window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
+        const personObject = { 
+          'name': newName, 
+          'number': newNumber, 
+        }
+        numberService
+          .updateNumber(personObject, duplicatePerson[0].id)
+          .then(returnedObject => {
+            setPersons(persons
+              .filter(person => person.id !== returnedObject.id)
+              .concat(returnedObject)
+            )
+          })
+      }
     } else {
       const personObject = { 
         'name': newName, 
         'number': newNumber, 
       }
+
       numberService
         .create(personObject)
         .then(returnedObject => {
