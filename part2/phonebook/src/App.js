@@ -1,6 +1,18 @@
 import React, { useState, useEffect } from 'react'
 import numberService from './services/numbers.js'
 
+const Notification = ({ message }) => {
+  if (message === null) {
+    return null
+  }
+
+  return (
+    <div className="notice">
+      {message}
+    </div>
+  )
+}
+
 const Number = ({ person, deleteNumber }) => {
   const handleDelete = () => { 
     if (window.confirm(`Delete ${person.name} ?`)) {
@@ -65,6 +77,7 @@ const App = () => {
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
   const [ newFilter, setNewFilter ] = useState('')
+  const [ notifyMessage, setNotifyMessage] = useState(null)
 
   useEffect(() => {
     numberService
@@ -92,6 +105,7 @@ const App = () => {
               .filter(person => person.id !== returnedObject.id)
               .concat(returnedObject)
             )
+            timedNotification(`Updated ${returnedObject.name}`, 5000)
           })
       }
     } else {
@@ -104,8 +118,16 @@ const App = () => {
         .create(personObject)
         .then(returnedObject => {
           setPersons(persons.concat(returnedObject))
+          timedNotification(`Added ${returnedObject.name}`, 5000)
         })
     }
+  }
+
+  const timedNotification = (message, time) => {
+    setNotifyMessage(message)
+    setTimeout(() => {
+      setNotifyMessage(null)
+    }, time)
   }
 
   const deleteNumber = (id) => {
@@ -129,6 +151,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={notifyMessage} />
       <Filter handler={handleFilterChange} />
       <h3>add a new</h3>
       <PersonForm submit={addName} handlers={{ 'name' : handleNameChange, 'number' : handleNumberChange }} />
