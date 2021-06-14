@@ -1,9 +1,19 @@
 import React, { useState, useEffect } from 'react'
 import numberService from './services/numbers.js'
 
-const Number = (props) => (
-  <div>{props.name} {props.number}</div>
-)
+const Number = ({ person, deleteNumber }) => {
+  const handleDelete = () => { 
+    if (window.confirm(`Delete ${person.name} ?`)) {
+      deleteNumber(person.id)
+    }   
+  }
+
+  return (
+    <div>
+      {person.name} {person.number} <input type="button" value="delete" onClick={handleDelete} />
+    </div>
+  )
+}
 
 const Numbers = (props) => {
   const filtered = props.persons.filter((person) => {
@@ -15,9 +25,9 @@ const Numbers = (props) => {
       {filtered.map((person) => {
           return (
             <Number
-              key={person.name} 
-              name={person.name} 
-              number={person.number}
+              key={person.id} 
+              person={person} 
+              deleteNumber={props.deleteNumber}
             />
           ) 
       }
@@ -83,6 +93,12 @@ const App = () => {
     }
   }
 
+  const deleteNumber = (id) => {
+    numberService
+      .deleteNumber(id)
+      .then(setPersons(persons.filter(person => person.id !== id)))
+  }
+
   const handleNameChange = (event) => {
     setNewName(event.target.value)
   }
@@ -102,7 +118,7 @@ const App = () => {
       <h3>add a new</h3>
       <PersonForm submit={addName} handlers={{ 'name' : handleNameChange, 'number' : handleNumberChange }} />
       <h3>Numbers</h3>
-      <Numbers persons={persons} filter={newFilter}/>
+      <Numbers persons={persons} filter={newFilter} deleteNumber={deleteNumber} />
     </div>
   )
 }
