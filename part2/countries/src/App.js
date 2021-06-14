@@ -9,9 +9,7 @@ const SearchForm = (props) => {
 }
 
 const FilterResult = ({ countries, filterText, handler }) => {
-  if (!countries) {
-    return <div><CountryDisplay /></div>
-  }
+
   const filteredCountries = countries.filter(country => country.name.toLowerCase().includes(filterText.toLowerCase()))
 
   if (filteredCountries.length > 10) {
@@ -53,6 +51,31 @@ const CountryDisplay = ({ country }) => {
         {country.languages.map(language => <li key={language.name}>{language.name}</li>)}
       </ul>
       <img src={country.flag} style={{width:'128px'}} alt={`${country.name} flag`} />
+      <WeatherDisplay capital={country.capital} />
+    </div>
+  )
+}
+
+const WeatherDisplay = ({ capital }) => {
+  const [weatherData, setWeatherData] = useState()
+
+  const key = process.env.REACT_APP_API_KEY
+  const url = `http://api.weatherstack.com/current?access_key=${key}&query=${capital}`
+
+  useEffect(() => {
+    axios
+      .get(url)
+      .then((response) => {
+        setWeatherData(response.data)
+      })
+  }, [url])
+
+  return (
+    <div>
+      <h2>Weather in {capital}</h2>
+      <span style={{display:'block'}}><strong>temperature</strong>: {weatherData?.current.temperature} Celsius</span>
+      <img src={weatherData?.current.weather_icons[0]} alt={weatherData?.current.weather_descriptions[0]} />
+      <span style={{display:'block'}}><strong>wind</strong>: {weatherData?.current.wind_speed} mph direction {weatherData?.current.wind_dir}</span>
     </div>
   )
 }
