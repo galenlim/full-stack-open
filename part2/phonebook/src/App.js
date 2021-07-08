@@ -35,13 +35,13 @@ const Numbers = (props) => {
   return (
     <div>
       {filtered.map((person) => {
-          return (
+        return (
             <Number
-              key={person.id} 
-              person={person} 
-              deleteNumber={props.deleteNumber}
+                key={person.id} 
+                person={person} 
+                deleteNumber={props.deleteNumber}
             />
-          ) 
+        )
       }
        )}
     </div>
@@ -109,7 +109,11 @@ const App = () => {
             timedNotification(`Updated ${returnedObject.name}`, 5000)
           })
           .catch(error => {
-            timedNotification(`Information of ${personObject.name} has already been removed from server`, 5000, true)
+            if (error.name === 'TypeError') {
+                timedNotification(`Information of ${personObject.name} has already been removed from server`, 5000, true)
+            } else {
+                timedNotification(error.response.data.error, 5000, true)
+            }
           })
       }
     } else {
@@ -124,6 +128,7 @@ const App = () => {
           setPersons(persons.concat(returnedObject))
           timedNotification(`Added ${returnedObject.name}`, 5000)
         })
+        .catch(error => {timedNotification(error.response.data.error, 5000, true)})
     }
   }
 
