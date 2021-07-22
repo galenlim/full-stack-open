@@ -28,6 +28,26 @@ test('id property is returned', async () => {
     expect(response.body[0].id).toBeDefined()
 })
 
+test('new posts can be created with the correct content', async () => {
+    const newBlog = {
+        title: "React patterns",
+        author: "Michael",
+        url: "https://reactpatterns.com/",
+        likes: 7,
+    }
+
+    const response = await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(201)
+
+    const blogsAtEnd = await helper.blogsInDb()
+
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
+
+    expect(response.body).toMatchObject(newBlog)
+})
+
 afterAll(() => {
     mongoose.connection.close()
 })
