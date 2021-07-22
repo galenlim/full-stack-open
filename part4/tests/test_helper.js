@@ -1,31 +1,57 @@
-const Note = require('../models/note')
+const Blog = require('../models/blog')
 
-const initialNotes = [
+const initialBlogs = [
     {
-        content: 'HTML is easy',
-        date: new Date(),
-        important: false,
+        title: "React patterns",
+        author: "Michael Chan",
+        url: "https://reactpatterns.com/",
+        likes: 7,
     },
     {
-        content: 'Browser can execute only Javascript',
-        date: new Date(),
-        important: true,
+        title: "Go To Statement Considered Harmful",
+        author: "Edsger W. Dijkstra",
+        url: "http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html",
+        likes: 5,
     },
+    {
+        title: "Canonical string reduction",
+        author: "Edsger W. Dijkstra",
+        url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
+        likes: 12,
+    },
+    {
+        title: "First class tests",
+        author: "Robert C. Martin",
+        url: "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll",
+        likes: 10,
+    },
+    {
+        title: "TDD harms architecture",
+        author: "Robert C. Martin",
+        url: "http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html",
+        likes: 0,
+    },
+    {
+        title: "Type wars",
+        author: "Robert C. Martin",
+        url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html",
+        likes: 2,
+    } 
 ]
 
-const nonExistingId = async () => {
-    const note = new Note({ content: 'willremovethissoon', date: new Date() })
-    await note.save()
-    await note.remove()
-
-    return note._id.toString()
-}
-
-const notesInDb = async () => {
-    const notes = await Note.find({})
-    return notes.map(note => note.toJSON())
-}
+//const nonExistingId = async () => {
+//    const note = new Note({ content: 'willremovethissoon', date: new Date() })
+//    await note.save()
+//    await note.remove()
+//
+//    return note._id.toString()
+//}
+//
+//const notesInDb = async () => {
+//    const notes = await Note.find({})
+//    return notes.map(note => note.toJSON())
+//}
 
 module.exports = {
-    initialNotes, nonExistingId, notesInDb
+    initialBlogs
 }
