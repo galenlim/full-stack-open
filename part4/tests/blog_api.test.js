@@ -24,15 +24,15 @@ test('blog posts are returned as json', async () => {
 
 test('id property is returned', async () => {
     const response = await api.get('/api/blogs')
-    
+
     expect(response.body[0].id).toBeDefined()
 })
 
 test('new posts can be created with the correct content', async () => {
     const newBlog = {
-        title: "React patterns",
-        author: "Michael",
-        url: "https://reactpatterns.com/",
+        title: 'React patterns',
+        author: 'Michael',
+        url: 'https://reactpatterns.com/',
         likes: 7,
     }
 
@@ -46,6 +46,21 @@ test('new posts can be created with the correct content', async () => {
     expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
 
     expect(response.body).toMatchObject(newBlog)
+})
+
+test('missing likes property defaults to 0', async () => {
+    const newBlogWithoutLikes = {
+        title: 'React patterns',
+        author: 'Michael',
+        url: 'https://reactpatterns.com/',
+    }
+
+    const response = await api
+        .post('/api/blogs')
+        .send(newBlogWithoutLikes)
+        .expect(201)
+
+    expect(response.body.likes).toEqual(0)
 })
 
 afterAll(() => {
