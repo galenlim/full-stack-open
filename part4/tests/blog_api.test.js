@@ -75,6 +75,30 @@ test('missing title and url properties return a bad request', async () => {
         .expect(400)
 })
 
+test('delete resource by id works and returns status code 200', async () => {
+    const noteToDelete = {
+        title: 'React patterns',
+        author: 'Michael',
+        url: 'https://reactpatterns.com/',
+        likes: 7,
+    }
+
+    const response = await api
+        .post('/api/blogs')
+        .send(noteToDelete)
+        .expect(201)
+
+    const blogsAfterAdd = await helper.blogsInDb()
+    expect(blogsAfterAdd).toHaveLength(helper.initialBlogs.length + 1)
+
+    await api
+        .delete(`/api/blogs/${response.body.id}`)
+        .expect(204)
+
+    const blogsAfterDelete = await helper.blogsInDb()
+    expect(blogsAfterDelete).toHaveLength(helper.initialBlogs.length)
+})
+
 afterAll(() => {
     mongoose.connection.close()
 })
