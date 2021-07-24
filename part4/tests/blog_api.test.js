@@ -29,12 +29,7 @@ test('id property is returned', async () => {
 })
 
 test('new posts can be created with the correct content', async () => {
-    const newBlog = {
-        title: 'React patterns',
-        author: 'Michael',
-        url: 'https://reactpatterns.com/',
-        likes: 7,
-    }
+    const newBlog = helper.initialBlogs[0]
 
     const response = await api
         .post('/api/blogs')
@@ -49,11 +44,8 @@ test('new posts can be created with the correct content', async () => {
 })
 
 test('missing likes property defaults to 0', async () => {
-    const newBlogWithoutLikes = {
-        title: 'React patterns',
-        author: 'Michael',
-        url: 'https://reactpatterns.com/',
-    }
+    const newBlogWithoutLikes = { ...helper.initialBlogs[0] }
+    delete newBlogWithoutLikes.likes
 
     const response = await api
         .post('/api/blogs')
@@ -64,10 +56,9 @@ test('missing likes property defaults to 0', async () => {
 })
 
 test('missing title and url properties return a bad request', async () => {
-    const newBlogMissingProps = {
-        author: 'Michael',
-        likes: 7,
-    }
+    const newBlogMissingProps = { ...helper.initialBlogs[0] }
+    delete newBlogMissingProps.title
+    delete newBlogMissingProps.url
 
     await api
         .post('/api/blogs')
@@ -75,17 +66,12 @@ test('missing title and url properties return a bad request', async () => {
         .expect(400)
 })
 
-test('delete resource by id works and returns status code 200', async () => {
-    const noteToDelete = {
-        title: 'React patterns',
-        author: 'Michael',
-        url: 'https://reactpatterns.com/',
-        likes: 7,
-    }
+test('delete resource by id works and returns status code 204', async () => {
+    const blogToDelete = helper.initialBlogs[0]
 
     const response = await api
         .post('/api/blogs')
-        .send(noteToDelete)
+        .send(blogToDelete)
         .expect(201)
 
     const blogsAfterAdd = await helper.blogsInDb()
@@ -97,6 +83,39 @@ test('delete resource by id works and returns status code 200', async () => {
 
     const blogsAfterDelete = await helper.blogsInDb()
     expect(blogsAfterDelete).toHaveLength(helper.initialBlogs.length)
+})
+
+test('update individual blog post correctly', async () => {
+    const blogToInsert = helper.initialBlogs[0]
+
+    const response = await api
+        .post('/api/blogs')
+        .send(blogToInsert)
+        .expect(201)
+
+    const blogsAfterAdd = await helper.blogsInDb()
+    expect(blogsAfterAdd).toHaveLength(helper.initialBlogs.length + 1)
+
+    const blogToUpdate = {
+        id: response.body.id,
+        title: 'Test patterns',
+        author: 'Gabriel',
+        url: 'https://reactpatterns.com/',
+        likes: 5,
+    }
+    const updatedResponse = await api
+        .put(`/api/blogs/${response.body.id}`)
+        .send(blogToUpdate)
+        .expect(200)
+
+    const blogsAfterUpdate = await helper.blogsInDb()
+
+    expect(blogsAfterUpdate).toHaveLength(helper.initialBlogs.length + 1)
+
+    const processedBlogToUpdate = JSON.parse(JSON.stringify(blogToUpdate))
+
+    expect(updatedResponse.body).toEqual(processedBlogToUpdate)
+
 })
 
 afterAll(() => {
