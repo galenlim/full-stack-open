@@ -1,6 +1,7 @@
 const listHelper = require('../utils/list_helper').totalLikes
 const favoriteBlog = require('../utils/list_helper').favoriteBlog
 const mostBlogs = require('../utils/list_helper').mostBlogs
+const mostLikes = require('../utils/list_helper').mostLikes
 
 const listWithNoBlog = []
 
@@ -134,6 +135,33 @@ describe('author of most blogs', () => {
             {
                 author: 'Robert C. Martin',
                 blogs: 3
+            }
+        )
+    })
+})
+
+describe('author with most likes', () => {
+    test('of empty list is empty', () => {
+        const result = mostLikes(listWithNoBlog)
+        expect(result).toEqual({})
+    })
+
+    test('of a list with only one blog, equals author of that blog', () => {
+        const result = mostLikes(listWithOneBlog)
+        expect(result).toEqual(
+            {
+                author: 'Edsger W. Dijkstra',
+                likes: 5
+            }
+        )
+    })
+
+    test('of a list with multiple blogs, equals the one with most likes', () => {
+        const result = mostLikes(listWithMultipleBlogs)
+        expect(result).toEqual(
+            {
+                author: 'Edsger W. Dijkstra',
+                likes: 17
             }
         )
     })
