@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
+import LoginForm from './components/LoginForm'
+import CreateBlogForm from './components/CreateBlogForm'
+import Message from './components/Message'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -11,6 +14,8 @@ const App = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+  const [notification, setNotification] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -30,16 +35,21 @@ const App = () => {
   const handleLogin = async (event) => {
     event.preventDefault()
 
-    const user = await loginService.login ({
-      username, password
-    })
-    window.localStorage.setItem(
-      'loggedBlogappUser', JSON.stringify(user)
-    )
-    blogService.setToken(user.token)
-    setUser(user)
-    setUsername('')
-    setPassword('')
+    try {
+        const user = await loginService.login ({
+          username, password
+        })
+        window.localStorage.setItem(
+          'loggedBlogappUser', JSON.stringify(user)
+        )
+        blogService.setToken(user.token)
+        setUser(user)
+        setUsername('')
+        setPassword('')
+    } catch {
+        setErrorMessage('wrong username or password')
+        setTimeout(() => setErrorMessage(''), 5000)
+    }
   }
 
   const handleLogout = () => {
@@ -53,59 +63,42 @@ const App = () => {
   const handleCreate = async (event) => {
     event.preventDefault()
 
-    const createdBlog = await blogService.create({
-      title, author, url
-    })
-    setTitle('')
-    setAuthor('')
-    setUrl('')
-    setBlogs(blogs.concat(createdBlog))
-    //combine note into one state
+    try {
+        const createdBlog = await blogService.create({
+          title, author, url
+        })
+        setTitle('')
+        setAuthor('')
+        setUrl('')
+        setBlogs(blogs.concat(createdBlog))
+        setNotification(`a new blog ${title} by ${author} added`)
+        setTimeout(() => setNotification(''), 5000)
+    } catch (error) {
+        setNotification(error.message)
+        setTimeout(() => setNotification(''), 3000)
+    }
   }
 
-  const createBlogForm = () => (
-    <form onSubmit={handleCreate}>
-      title:<input type="text" value={title} onChange={({ target }) => setTitle(target.value)}/><br />
-      author:<input type="text" value={author} onChange={({ target }) => setAuthor(target.value)}/><br />
-      url:<input type="text" value={url} onChange={({ target }) => setUrl(target.value)}/><br />
-      <button type="submit">create</button>
-    </form>
-  )
+
   if (user === null) {
     return (
       <div>
         <h2>Log in to the application</h2>
-        <form onSubmit={handleLogin}>
-          <div>
-            <input
-            type="text"
-            value={username}
-            name="Username"
-            onChange={({ target }) => setUsername(target.value)}
-            />
-          </div>
-          <div>
-            <input
-            type="password"
-            value={password}
-            name="Password"
-            onChange={({ target }) => setPassword(target.value)}
-            />
-          </div>
-          <button type="submit">login</button>
-        </form>
+        <Message content={errorMessage} isError={true} />
+          <LoginForm handleLogin={handleLogin} username={username} password={password} setUsername={setUsername} setPassword={setPassword} />
       </div>
     )
   }
   return (
     <div>
       <h2>blogs</h2>
+      <Message content={notification} isError={false} />
       <p>
         { user.name } logged in 
         <input type="button" value="logout" onClick={handleLogout} />
       </p>
       <h2>create new</h2>
-      { createBlogForm() }
+      <CreateBlogForm handleCreate={handleCreate} title={title} author={author} url={url} setTitle={setTitle} setAuthor={setAuthor} setUrl={setUrl} /> 
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}
