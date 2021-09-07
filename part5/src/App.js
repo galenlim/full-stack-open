@@ -12,9 +12,6 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
   const [notification, setNotification] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
 
@@ -56,23 +53,13 @@ const App = () => {
   const handleLogout = () => {
     window.localStorage.removeItem('loggedBlogappUser')
     setUser(null)
-    setTitle('')
-    setAuthor('')
-    setUrl('')
   }
 
-  const handleCreate = async (event) => {
-    event.preventDefault()
-
+  const createBlog = async (blogObject) => {
     try {
-        const createdBlog = await blogService.create({
-          title, author, url
-        })
-        setTitle('')
-        setAuthor('')
-        setUrl('')
+        const createdBlog = await blogService.create(blogObject)
         setBlogs(blogs.concat(createdBlog))
-        setNotification(`a new blog ${title} by ${author} added`)
+        setNotification(`a new blog ${createdBlog.title} by ${createdBlog.author} added`)
         setTimeout(() => setNotification(''), 5000)
     } catch (error) {
         setNotification(error.message)
@@ -99,8 +86,10 @@ const App = () => {
         <input type="button" value="logout" onClick={handleLogout} />
       </p>
       <Togglable buttonLabel="create new blog">
-        <h2>create new</h2>
-        <CreateBlogForm handleCreate={handleCreate} title={title} author={author} url={url} setTitle={setTitle} setAuthor={setAuthor} setUrl={setUrl} /> 
+        <div>
+          <h2>create new</h2>
+          <CreateBlogForm createBlog={createBlog} /> 
+        </div>
       </Togglable>
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
