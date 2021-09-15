@@ -2,11 +2,11 @@ import React from 'react'
 
 const Message = ({ isError, content }) => {
   if (!content) {
-      return null
+    return null
   }
 
-  const style = isError ? "error" : "message"
-  
+  const style = isError ? 'error' : 'message'
+
   return (
     <div className={style}>{content}</div>
   )

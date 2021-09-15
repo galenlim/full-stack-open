@@ -18,7 +18,7 @@ const App = () => {
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
-    )  
+    )
   }, [])
 
   useEffect(() => {
@@ -34,19 +34,19 @@ const App = () => {
     event.preventDefault()
 
     try {
-        const user = await loginService.login ({
-          username, password
-        })
-        window.localStorage.setItem(
-          'loggedBlogappUser', JSON.stringify(user)
-        )
-        blogService.setToken(user.token)
-        setUser(user)
-        setUsername('')
-        setPassword('')
-    } catch {
-        setErrorMessage('wrong username or password')
-        setTimeout(() => setErrorMessage(''), 5000)
+      const user = await loginService.login ({
+        username, password
+      })
+      window.localStorage.setItem(
+        'loggedBlogappUser', JSON.stringify(user)
+      )
+      blogService.setToken(user.token)
+      setUser(user)
+      setUsername('')
+      setPassword('')
+    } catch(error) {
+      setErrorMessage('wrong username or password')
+      setTimeout(() => setErrorMessage(''), 5000)
     }
   }
 
@@ -71,7 +71,7 @@ const App = () => {
   const deleteBlog = async (id) => {
     await blogService.remove(id)
     setBlogs(blogs.filter((blog) => blog.id !== id))
-    setNotification(`blog deleted`)
+    setNotification('blog deleted')
     setTimeout(() => setNotification(''), 5000)
   }
 
@@ -80,7 +80,7 @@ const App = () => {
       <div>
         <h2>Log in to the application</h2>
         <Message content={errorMessage} isError={true} />
-          <LoginForm handleLogin={handleLogin} username={username} password={password} setUsername={setUsername} setPassword={setPassword} />
+        <LoginForm handleLogin={handleLogin} username={username} password={password} setUsername={setUsername} setPassword={setPassword} />
       </div>
     )
   }
@@ -89,20 +89,20 @@ const App = () => {
       <h2>blogs</h2>
       <Message content={notification} isError={false} />
       <p>
-        { user.name } logged in 
+        { user.name } logged in
         <input type="button" value="logout" onClick={handleLogout} />
       </p>
       <Togglable buttonLabel="create new blog">
         <div>
           <h2>create new</h2>
-          <CreateBlogForm createBlog={createBlog} /> 
+          <CreateBlogForm createBlog={createBlog} />
         </div>
       </Togglable>
       {blogs
         .sort((a, b) => b.likes - a.likes)
         .map(blog =>
           <Blog key={blog.id} blog={blog} deleteBlog={deleteBlog} userid={user.id} />
-      )}
+        )}
     </div>
   )
 }

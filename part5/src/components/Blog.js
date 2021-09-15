@@ -10,7 +10,7 @@ const Blog = ({ blog, deleteBlog, userid }) => {
     borderWidth: 1,
     marginBottom: 5
   }
-  
+
   const { title, url, author, user, id } = blog
   const [view, setView] = useState(false)
   const [likes, setLikes] = useState(blog.likes)
@@ -41,7 +41,7 @@ const Blog = ({ blog, deleteBlog, userid }) => {
   const HiddenBlog = () => (
     <div style={blogStyle}>
       {title} {author} <input type="button" value="view" onClick={handleView} />
-    </div>  
+    </div>
   )
 
   const removeButton = () => {
@@ -52,26 +52,26 @@ const Blog = ({ blog, deleteBlog, userid }) => {
     }
   }
 
-  const DisplayedBlog = () => ( 
+  const DisplayedBlog = () => (
     <div style={blogStyle}>
       {title} {author} <input type="button" value="hide" onClick={handleView} />
       <div>{url}</div>
       <div>likes {likes} <input type="button" value="like" onClick={handleLike} /></div>
       <div>{user.name}</div>
       {removeButton()}
-    </div>  
-)
+    </div>
+  )
 
   if (view) {
     return <DisplayedBlog />
   }
   return <HiddenBlog />
-  
+
 }
 
 Blog.propTypes = {
-  blog: PropTypes.object.isRequired, 
-  deleteBlog: PropTypes.func.isRequired, 
+  blog: PropTypes.object.isRequired,
+  deleteBlog: PropTypes.func.isRequired,
   userid: PropTypes.string.isRequired
 }
 
