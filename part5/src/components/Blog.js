@@ -39,7 +39,7 @@ const Blog = ({ blog, deleteBlog, userid }) => {
   }
 
   const HiddenBlog = () => (
-    <div style={blogStyle}>
+    <div>
       {title} {author} <input type="button" value="view" onClick={handleView} />
     </div>
   )
@@ -53,7 +53,7 @@ const Blog = ({ blog, deleteBlog, userid }) => {
   }
 
   const DisplayedBlog = () => (
-    <div style={blogStyle}>
+    <div>
       {title} {author} <input type="button" value="hide" onClick={handleView} />
       <div>{url}</div>
       <div>likes {likes} <input type="button" value="like" onClick={handleLike} /></div>
@@ -62,11 +62,14 @@ const Blog = ({ blog, deleteBlog, userid }) => {
     </div>
   )
 
-  if (view) {
-    return <DisplayedBlog />
-  }
-  return <HiddenBlog />
-
+  return (
+    <div style={blogStyle} className="blogDiv">
+      {view
+        ? <DisplayedBlog />
+        : <HiddenBlog />
+      }
+    </div>
+  )
 }
 
 Blog.propTypes = {
