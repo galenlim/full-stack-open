@@ -1,43 +1,57 @@
 import React from 'react'
-import { render } from '@testing-library/react'
+import { render, fireEvent } from '@testing-library/react'
 import '@testing-library/jest-dom/extend-expect'
 import Blog from './Blog'
 
 let component
+let div
+
+const blog = {
+  user: 'user1',
+  likes: 2,
+  author: 'author1',
+  title: 'title1',
+  url: 'url'
+}
 
 beforeEach(() => {
-  const blog = {
-    user: 'user1',
-    likes: 2,
-    author: 'author1',
-    title: 'title1',
-    url: 'url'
-  }
 
   component = render(
     <Blog key={blog.id} blog={blog} deleteBlog={jest.fn()} userid="1" />
   )
+  div = component.container.querySelector('.blogDiv')
 
 })
 
-test('Blog renders title', () => {
-  expect(
-    component.container.querySelector('.blogDiv')
-  ).toHaveTextContent('title1')
+describe('Initial rendering', () => {
+
+  test('Blog renders title', () => {
+    expect(div).toHaveTextContent('title1')
+  })
+
+  test('Blog renders author', () => {
+    expect(div).toHaveTextContent('author1')
+  })
+
+  test('Blog does not render url and likes', () => {
+    expect(div).not.toHaveTextContent('url')
+
+    expect(div).not.toHaveTextContent(2)
+  })
 })
 
-test('Blog renders author', () => {
-  expect(
-    component.container.querySelector('.blogDiv')
-  ).toHaveTextContent('author1')
-})
+describe('When show button is clicked', () => {
 
-test('Blog does not render url and likes', () => {
-  expect(
-    component.container.querySelector('.blogDiv')
-  ).not.toHaveTextContent('url')
+  beforeEach(() => {
+    const showButton = component.getByDisplayValue('view')
+    fireEvent.click(showButton)
+  })
 
-  expect(
-    component.container.querySelector('.blogDiv')
-  ).not.toHaveTextContent(2)
+  test('url is shown', () => {
+    expect(div).toHaveTextContent('url')
+  })
+
+  test('number of likes is shown', () => {
+    expect(div).toHaveTextContent(2)
+  })
 })
