@@ -55,3 +55,20 @@ describe('When show button is clicked', () => {
     expect(div).toHaveTextContent(2)
   })
 })
+
+describe('When like button is clicked twice', () => {
+
+  test('event handler is called twice', () => {
+    const handleLike = jest.fn()
+
+    component = render(
+      <input type="button" value="like" onClick={handleLike} />
+    )
+
+    const likeButton = component.getByDisplayValue('like')
+    fireEvent.click(likeButton)
+    fireEvent.click(likeButton)
+
+    expect(handleLike.mock.calls).toHaveLength(2)
+  })
+})
