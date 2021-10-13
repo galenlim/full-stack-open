@@ -8,7 +8,7 @@ const LoginForm = ({
   setUsername,
   setPassword
 }) => (
-  <form onSubmit={handleLogin}>
+  <form onSubmit={handleLogin} id="loginform">
     <div>
       <input
         type="text"
