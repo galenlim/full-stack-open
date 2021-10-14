@@ -53,5 +53,28 @@ describe('Blog app', function() {
       cy.get('.blogDiv').should('contain', 'Test Title')
       cy.get('.blogDiv').should('contain', 'Test Author')
     })
+
+    describe('and when a post is present', function() {
+      beforeEach(function() {
+        cy.request({
+          method: 'POST',
+          url: 'http://localhost:3003/api/blogs',
+          body: { title: 'Test Title', author: 'Test Author', url: 'Test Url' },
+          headers: {
+            'Authorization': `bearer ${JSON.parse(localStorage.getItem('loggedBlogappUser')).token}`
+          }
+        })
+
+        cy.visit('http://localhost:3000')
+      })
+
+      it('it can be liked', function() {
+        cy.contains('Test Title').find('input').click()
+        cy.contains('Test Title').find('input[value="like"]').click()
+
+        cy.contains('Test Title').should('contain', 'likes 1')
+      })
+
+    })
   })
 })
