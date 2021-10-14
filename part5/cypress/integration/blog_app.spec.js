@@ -66,15 +66,41 @@ describe('Blog app', function() {
         })
 
         cy.visit('http://localhost:3000')
+        cy.contains('Test Title').find('input[value="view"]').click()
       })
 
       it('it can be liked', function() {
-        cy.contains('Test Title').find('input').click()
         cy.contains('Test Title').find('input[value="like"]').click()
 
         cy.contains('Test Title').should('contain', 'likes 1')
       })
 
+      it('it can be deleted by the user who created it', function() {
+        cy.contains('Test Title').find('input[value="remove"]').click()
+
+        cy.should('not.contain', 'Test Title')
+      })
+
+      it.only('it cannot be deleted by other users', function() {
+        cy.get('input[value="logout"]').click()
+
+        const user = {
+          name: 'Tester 2',
+          username: 'tester2',
+          password: 'tested'
+        }
+        cy.request('POST', 'http://localhost:3003/api/users/', user)
+
+        cy.request('POST', 'http://localhost:3003/api/login', {
+          username: 'tester2', password: 'tested'
+        }).then(response => {
+          localStorage.setItem('loggedBlogappUser', JSON.stringify(response.body))
+          cy.visit('http://localhost:3000')
+        })
+
+        cy.contains('Test Title').find('input[value="view"]').click()
+        cy.contains('Test Title').find('input[value="remove"]').should('not.exist')
+      })
     })
   })
 })
