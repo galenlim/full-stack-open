@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import blogService from '../services/blogs'
 
@@ -14,6 +14,9 @@ const Blog = ({ blog, deleteBlog, userid }) => {
   const { title, url, author, user, id } = blog
   const [view, setView] = useState(false)
   const [likes, setLikes] = useState(blog.likes)
+
+  useEffect(() => {
+  })
 
   const handleView = () => {
     setView(!view)
@@ -52,11 +55,17 @@ const Blog = ({ blog, deleteBlog, userid }) => {
     }
   }
 
+  const likeButton = () => {
+    return (
+      <input type="button" value="like" onClick={handleLike} />
+    )
+  }
+
   const DisplayedBlog = () => (
     <div>
       {title} {author} <input type="button" value="hide" onClick={handleView} />
       <div>{url}</div>
-      <div>likes {likes} <input type="button" value="like" onClick={handleLike} /></div>
+      <div>likes {likes} {likeButton()}</div>
       <div>{user.name}</div>
       {removeButton()}
     </div>

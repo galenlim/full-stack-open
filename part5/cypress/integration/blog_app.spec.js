@@ -78,10 +78,10 @@ describe('Blog app', function() {
       it('it can be deleted by the user who created it', function() {
         cy.contains('Test Title').find('input[value="remove"]').click()
 
-        cy.should('not.contain', 'Test Title')
+        cy.get('body').should('not.contain', 'Test Title')
       })
 
-      it.only('it cannot be deleted by other users', function() {
+      it('it cannot be deleted by other users', function() {
         cy.get('input[value="logout"]').click()
 
         const user = {
@@ -100,6 +100,28 @@ describe('Blog app', function() {
 
         cy.contains('Test Title').find('input[value="view"]').click()
         cy.contains('Test Title').find('input[value="remove"]').should('not.exist')
+      })
+
+    })
+
+    describe('there are a few blogs', function() {
+      it.only('they are sorted by number of likes', function() {
+        cy.createBlog({ title: 'Blog 1', author: 'author', url: 'url' })
+        cy.createBlog({ title: 'Blog 2', author: 'author', url: 'url' })
+        cy.createBlog({ title: 'Blog 3', author: 'author', url: 'url' })
+        cy.visit('http://localhost:3000')
+
+        cy.likeBlog({ title: 'Blog 3', number: 3 })
+        cy.likeBlog({ title: 'Blog 2', number: 2 })
+        cy.likeBlog({ title: 'Blog 1', number: 1 })
+        cy.visit('http://localhost:3000')
+
+        cy.get('.blogDiv').then(blogs => {
+          const texts = Cypress.$.makeArray(blogs).map((el) => el.innerText)
+          return texts
+        })
+          .should('deep.equal', ['Blog 3 author ', 'Blog 2 author ', 'Blog 1 author '])
+
       })
     })
   })
