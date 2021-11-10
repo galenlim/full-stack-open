@@ -40,10 +40,10 @@ const reducer = (state = initialState, action) => {
 }
 
 //action creators
-export const voteAnecdote = (id) => {
+export const voteAnecdote = (id, content) => {
   return {
     type: 'VOTE',
-    data: { id }
+    data: { id, content }
   }
 }
 
@@ -57,6 +57,5 @@ export const createAnecdote = (content) => {
     }
   }
 }
-
 
 export default reducer
