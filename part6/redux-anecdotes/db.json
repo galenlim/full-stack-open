@@ -2,23 +2,23 @@
   "anecdotes": [
     {
       "content": "If it hurts, do it more often",
-      "votes": 1,
+      "votes": 4,
       "id": "47145"
     },
     {
       "content": "Adding manpower to a late software project makes it later!",
-      "votes": 2,
+      "votes": 5,
       "id": "21149"
     },
     {
       "content": "The first 90 percent of the code accounts for the first 90 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.",
-      "id": "69581",
-      "votes": 0
+      "votes": 1,
+      "id": "69581"
     },
     {
       "content": "Any fool can write code that a computer can understand. Good programmers write code that humans can understand.",
-      "id": "36975",
-      "votes": 0
+      "votes": 3,
+      "id": "36975"
     },
     {
       "content": "Premature optimization is the root of all evil.",
@@ -31,9 +31,29 @@
       "votes": 0
     },
     {
-      "content": "tee",
+      "content": "testing",
+      "votes": 1,
+      "id": "s0ceGdd"
+    },
+    {
+      "content": "test",
+      "votes": 1,
+      "id": "_uQs5S6"
+    },
+    {
+      "content": "aa",
       "votes": 0,
-      "id": "YJFIhys"
+      "id": "u9ALDA3"
+    },
+    {
+      "content": "ff",
+      "votes": 0,
+      "id": "B6rBU2d"
+    },
+    {
+      "content": "asd",
+      "votes": 0,
+      "id": "kYKBMSl"
     }
   ]
 }
