@@ -2,10 +2,6 @@ const initialState = ''
 
 const notificationReducer = (state = initialState, action) => {
   switch (action.type) {
-    //case 'VOTE':
-    //  return `you voted '${action.data.content}'`
-    //case 'NEW_ANECDOTE':
-    //  return `you added '${action.data.content}'`
     case 'SET':
       return action.data
     case 'REMOVE':
@@ -22,13 +18,16 @@ export const removeNotification = () => {
   }
 }
 
+let timer = 0
+
 export const setNotification = (message, secondsToShow) => {
   return async dispatch => {
+    clearTimeout(timer)
     await dispatch({
       type: 'SET',
       data: message
     })
-    setTimeout(() => dispatch(removeNotification()), secondsToShow*1000)
+    timer = setTimeout(() => dispatch(removeNotification()), secondsToShow*1000)
   }
 }
 
