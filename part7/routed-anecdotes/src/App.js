@@ -107,7 +107,7 @@ const CreateNew = (props) => {
           <input {...info} />
         </div>
         <button>create</button>
-        <input type="button" onClick={handleReset} value="reset" />
+        <input type="reset" onClick={handleReset} value="reset" />
       </form>
     </div>
   )
