@@ -6,14 +6,14 @@ import Message from './components/Message'
 import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import { connect } from 'react-redux'
+import { setMessage } from './reducers/messageReducer'
 
-const App = () => {
+const App = (props) => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [notification, setNotification] = useState('')
-  const [errorMessage, setErrorMessage] = useState('')
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -45,8 +45,7 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch(error) {
-      setErrorMessage('wrong username or password')
-      setTimeout(() => setErrorMessage(''), 5000)
+      props.setMessage('wrong username or password', true, 5)
     }
   }
 
@@ -59,27 +58,23 @@ const App = () => {
     try {
       const createdBlog = await blogService.create(blogObject)
       setBlogs(blogs.concat(createdBlog))
-      console.log(createdBlog)
-      setNotification(`a new blog ${createdBlog.title} by ${createdBlog.author} added`)
-      setTimeout(() => setNotification(''), 5000)
+      props.setMessage(`a new blog ${createdBlog.title} by ${createdBlog.author} added`, false, 5)
     } catch (error) {
-      setNotification(error.message)
-      setTimeout(() => setNotification(''), 3000)
+      props.setMessage(error.message, true, 3)
     }
   }
 
   const deleteBlog = async (id) => {
     await blogService.remove(id)
     setBlogs(blogs.filter((blog) => blog.id !== id))
-    setNotification('blog deleted')
-    setTimeout(() => setNotification(''), 5000)
+    props.setMessage('blog deleted', false, 5)
   }
 
   if (user === null) {
     return (
       <div>
         <h2>Log in to the application</h2>
-        <Message content={errorMessage} isError={true} />
+        <Message />
         <LoginForm handleLogin={handleLogin} username={username} password={password} setUsername={setUsername} setPassword={setPassword} />
       </div>
     )
@@ -87,7 +82,7 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
-      <Message content={notification} isError={false} />
+      <Message />
       <p id="logged-in-message">
         { user.name } logged in
         <input type="button" value="logout" onClick={handleLogout} />
@@ -107,4 +102,9 @@ const App = () => {
   )
 }
 
-export default App
+const mapDispatchToProps = {
+  setMessage
+}
+
+const ConnectedApp = connect(null, mapDispatchToProps)(App)
+export default ConnectedApp
