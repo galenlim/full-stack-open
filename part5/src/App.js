@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import Blog from './components/Blog'
+import BlogList from './components/BlogList'
 import LoginForm from './components/LoginForm'
 import CreateBlogForm from './components/CreateBlogForm'
 import Message from './components/Message'
@@ -7,7 +7,9 @@ import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import { connect } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { setMessage } from './reducers/messageReducer'
+import { initializeBlogs } from './reducers/blogReducer'
 
 const App = (props) => {
   const [blogs, setBlogs] = useState([])
@@ -15,11 +17,13 @@ const App = (props) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
-  useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )
-  }, [])
+  //useEffect(() => {
+  //  blogService.getAll().then(blogs =>
+  //    setBlogs( blogs )
+  //  )
+  //}, [])
+  const dispatch = useDispatch()
+  useEffect(() => { dispatch(initializeBlogs()) }, [dispatch])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -64,11 +68,11 @@ const App = (props) => {
     }
   }
 
-  const deleteBlog = async (id) => {
-    await blogService.remove(id)
-    setBlogs(blogs.filter((blog) => blog.id !== id))
-    props.setMessage('blog deleted', false, 5)
-  }
+  //const deleteBlog = async (id) => {
+  //  await blogService.remove(id)
+  //  setBlogs(blogs.filter((blog) => blog.id !== id))
+  //  props.setMessage('blog deleted', false, 5)
+  //}
 
   if (user === null) {
     return (
@@ -93,11 +97,7 @@ const App = (props) => {
           <CreateBlogForm createBlog={createBlog} />
         </div>
       </Togglable>
-      {blogs
-        .sort((a, b) => b.likes - a.likes)
-        .map(blog =>
-          <Blog key={blog.id} blog={blog} deleteBlog={deleteBlog} userid={user.id} />
-        )}
+      <BlogList />
     </div>
   )
 }
