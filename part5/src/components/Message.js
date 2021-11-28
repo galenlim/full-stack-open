@@ -1,7 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-//const Message = ({ isError, content }) => {
 const Message = ({ content, isError }) => {
   if (!content) {
     return null

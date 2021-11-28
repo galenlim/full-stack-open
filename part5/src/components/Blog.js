@@ -41,6 +41,12 @@ const Blog = ({ blog, deleteBlog, userid }) => {
     }
   }
 
+  //const deleteBlog = async (id) => {
+  //  await blogService.remove(id)
+  //  setBlogs(blogs.filter((blog) => blog.id !== id))
+  //  props.setMessage('blog deleted', false, 5)
+  //}
+
   const HiddenBlog = () => (
     <div>
       {title} {author} <input type="button" value="view" onClick={handleView} />

@@ -12,16 +12,10 @@ import { setMessage } from './reducers/messageReducer'
 import { initializeBlogs } from './reducers/blogReducer'
 
 const App = (props) => {
-  const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
-  //useEffect(() => {
-  //  blogService.getAll().then(blogs =>
-  //    setBlogs( blogs )
-  //  )
-  //}, [])
   const dispatch = useDispatch()
   useEffect(() => { dispatch(initializeBlogs()) }, [dispatch])
 
@@ -58,22 +52,6 @@ const App = (props) => {
     setUser(null)
   }
 
-  const createBlog = async (blogObject) => {
-    try {
-      const createdBlog = await blogService.create(blogObject)
-      setBlogs(blogs.concat(createdBlog))
-      props.setMessage(`a new blog ${createdBlog.title} by ${createdBlog.author} added`, false, 5)
-    } catch (error) {
-      props.setMessage(error.message, true, 3)
-    }
-  }
-
-  //const deleteBlog = async (id) => {
-  //  await blogService.remove(id)
-  //  setBlogs(blogs.filter((blog) => blog.id !== id))
-  //  props.setMessage('blog deleted', false, 5)
-  //}
-
   if (user === null) {
     return (
       <div>
@@ -83,6 +61,7 @@ const App = (props) => {
       </div>
     )
   }
+
   return (
     <div>
       <h2>blogs</h2>
@@ -92,10 +71,7 @@ const App = (props) => {
         <input type="button" value="logout" onClick={handleLogout} />
       </p>
       <Togglable buttonLabel="create new blog">
-        <div>
-          <h2>create new</h2>
-          <CreateBlogForm createBlog={createBlog} />
-        </div>
+        <CreateBlogForm />
       </Togglable>
       <BlogList />
     </div>

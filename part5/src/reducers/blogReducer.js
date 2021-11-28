@@ -11,7 +11,6 @@ const reducer = (state = [], action) => {
   }
 }
 
-
 //action creators
 export const initializeBlogs = () => {
   return async dispatch => {
@@ -19,6 +18,16 @@ export const initializeBlogs = () => {
     dispatch({
       type: 'INIT_BLOGS',
       data: blogs
+    })
+  }
+}
+
+export const createBlog = (blog) => {
+  return async dispatch => {
+    const newBlog = await blogService.create(blog)
+    dispatch({
+      type: 'NEW_BLOG',
+      data: newBlog
     })
   }
 }
