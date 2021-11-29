@@ -1,4 +1,5 @@
 import blogService from '../services/blogs'
+import { setMessage } from '../reducers/messageReducer'
 
 const reducer = (state = [], action) => {
   switch (action.type) {
@@ -6,6 +7,17 @@ const reducer = (state = [], action) => {
     return action.data
   case 'NEW_BLOG':
     return state.concat(action.data)
+  case 'LIKE_BLOG': {
+    const id = action.data.id
+    return state
+      .map(blog =>
+        blog.id === id ? { ...action.data, user: blog.user } : blog)
+  }
+  case 'REMOVE_BLOG': {
+    const id = action.data
+    return state
+      .filter(blog => blog.id !== id)
+  }
   default:
     return state
   }
@@ -29,6 +41,35 @@ export const createBlog = (blog) => {
       type: 'NEW_BLOG',
       data: newBlog
     })
+  }
+}
+
+export const likeBlog = ({ likes, id, ...rest }) => {
+  return async dispatch => {
+    const changedBlog = {
+      ...rest,
+      likes: likes + 1,
+    }
+    const likedBlog = await blogService.update(id, changedBlog)
+    dispatch({
+      type: 'LIKE_BLOG',
+      data: likedBlog
+    })
+  }
+}
+
+export const removeBlog = (id) => {
+  return async dispatch => {
+    try {
+      await blogService.remove(id)
+      dispatch({
+        type: 'REMOVE_BLOG',
+        data: id
+      })
+      dispatch(setMessage('blog deleted', false, 5))
+    } catch(error) {
+      dispatch(setMessage(error.message, true, 3))
+    }
   }
 }
 

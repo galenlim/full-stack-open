@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import blogService from '../services/blogs'
+import { connect } from 'react-redux'
+import { likeBlog, removeBlog } from '../reducers/blogReducer'
+import { setMessage } from '../reducers/messageReducer'
 
-const Blog = ({ blog, deleteBlog, userid }) => {
+const Blog = ({ blog, likeBlog, removeBlog }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -11,41 +13,22 @@ const Blog = ({ blog, deleteBlog, userid }) => {
     marginBottom: 5
   }
 
-  const { title, url, author, user, id } = blog
+  const { title, url, author, user, id, likes } = blog
   const [view, setView] = useState(false)
-  const [likes, setLikes] = useState(blog.likes)
-
-  useEffect(() => {
-  })
 
   const handleView = () => {
     setView(!view)
   }
 
-  const handleLike = async () => {
-    const blogObject = {
-      user: user.id,
-      likes: likes + 1,
-      author,
-      title,
-      url
-    }
-
-    const updatedBlog = await blogService.update(id, blogObject)
-    setLikes(updatedBlog.likes)
+  const handleLike = (blog) => {
+    likeBlog(blog)
   }
 
-  const handleRemove = async () => {
+  const handleRemove = (id) => {
     if(window.confirm(`Remove blog ${title} by ${author}`)) {
-      await deleteBlog(id)
+      removeBlog(id)
     }
   }
-
-  //const deleteBlog = async (id) => {
-  //  await blogService.remove(id)
-  //  setBlogs(blogs.filter((blog) => blog.id !== id))
-  //  props.setMessage('blog deleted', false, 5)
-  //}
 
   const HiddenBlog = () => (
     <div>
@@ -54,16 +37,16 @@ const Blog = ({ blog, deleteBlog, userid }) => {
   )
 
   const removeButton = () => {
-    if (user.id === userid || user === userid) {
-      return (
-        <div><input type="button" value="remove" onClick={handleRemove} /></div>
-      )
-    }
+    //if (user.id === userid || user === userid) {
+    return (
+      <input type="button" value="remove" onClick={() => handleRemove(id)} />
+    )
+    //}
   }
 
   const likeButton = () => {
     return (
-      <input type="button" value="like" onClick={handleLike} />
+      <input type="button" value="like" onClick={() => handleLike(blog)} />
     )
   }
 
@@ -73,7 +56,7 @@ const Blog = ({ blog, deleteBlog, userid }) => {
       <div>{url}</div>
       <div>likes {likes} {likeButton()}</div>
       <div>{user.name}</div>
-      {removeButton()}
+      <div>{removeButton()}</div>
     </div>
   )
 
@@ -89,8 +72,13 @@ const Blog = ({ blog, deleteBlog, userid }) => {
 
 Blog.propTypes = {
   blog: PropTypes.object.isRequired,
-  deleteBlog: PropTypes.func.isRequired,
-  userid: PropTypes.string.isRequired
 }
 
-export default Blog
+const mapDispatchToProps = {
+  likeBlog,
+  removeBlog,
+  setMessage
+}
+
+const ConnectedBlog = connect(null, mapDispatchToProps)(Blog)
+export default ConnectedBlog
