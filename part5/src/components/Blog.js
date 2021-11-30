@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
+import { connect, useSelector } from 'react-redux'
 import { likeBlog, removeBlog } from '../reducers/blogReducer'
 import { setMessage } from '../reducers/messageReducer'
 
@@ -36,12 +36,14 @@ const Blog = ({ blog, likeBlog, removeBlog }) => {
     </div>
   )
 
+  const loggedInUser = useSelector(state => state.user)
+
   const removeButton = () => {
-    //if (user.id === userid || user === userid) {
-    return (
-      <input type="button" value="remove" onClick={() => handleRemove(id)} />
-    )
-    //}
+    if (user.id === loggedInUser.id) {
+      return (
+        <input type="button" value="remove" onClick={() => handleRemove(id)} />
+      )
+    }
   }
 
   const likeButton = () => {
