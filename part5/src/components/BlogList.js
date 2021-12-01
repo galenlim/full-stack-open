@@ -9,7 +9,6 @@ const BlogList = (props) => {
         .sort((a, b) => b.likes - a.likes)
         .map(blog =>
           <Blog key={blog.id} blog={blog} />
-          //<Blog key={blog.id} blog={blog} deleteBlog={deleteBlog} userid={user.id} />
         )}
     </div>
   )

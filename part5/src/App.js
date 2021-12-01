@@ -4,12 +4,16 @@ import LoginForm from './components/LoginForm'
 import CreateBlogForm from './components/CreateBlogForm'
 import Message from './components/Message'
 import Togglable from './components/Togglable'
-import blogService from './services/blogs'
+import Users from './components/Users'
 import { connect } from 'react-redux'
 import { useSelector, useDispatch } from 'react-redux'
 import { setMessage } from './reducers/messageReducer'
 import { initializeBlogs } from './reducers/blogReducer'
-import { loginUser, logoutUser } from './reducers/loginReducer'
+import { logoutUser, recoverUser } from './reducers/loginReducer'
+import {
+  BrowserRouter as Router,
+  Switch, Route
+} from 'react-router-dom'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -20,8 +24,7 @@ const App = () => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
-      dispatch(loginUser(user))
-      blogService.setToken(user.token)
+      dispatch(recoverUser(user))
     }
   }, [])
 
@@ -40,18 +43,28 @@ const App = () => {
   }
 
   return (
-    <div>
-      <h2>blogs</h2>
-      <Message />
-      <p id="logged-in-message">
-        { user.name } logged in
-        <input type="button" value="logout" onClick={handleLogout} />
-      </p>
-      <Togglable buttonLabel="create new blog">
-        <CreateBlogForm />
-      </Togglable>
-      <BlogList />
-    </div>
+    <Router>
+      <div>
+        <h2>blogs</h2>
+        <Message />
+        <p id="logged-in-message">
+          { user.name } logged in
+          <input type="button" value="logout" onClick={handleLogout} />
+        </p>
+      </div>
+
+      <Switch>
+        <Route path="/users">
+          <Users />
+        </Route>
+        <Route path="/">
+          <Togglable buttonLabel="create new blog">
+            <CreateBlogForm />
+          </Togglable>
+          <BlogList />
+        </Route>
+      </Switch>
+    </Router>
   )
 }
 

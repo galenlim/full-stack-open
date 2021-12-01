@@ -8,6 +8,8 @@ const reducer = (state = null, action) => {
     return action.data
   case 'LOGOUT':
     return action.data
+  case 'RECOVER':
+    return action.data
   default:
     return state
   }
@@ -29,6 +31,20 @@ export const loginUser = ({ username, password }) => {
       })
     } catch(error) {
       dispatch(setMessage('wrong username or password', true, 5))
+    }
+  }
+}
+
+export const recoverUser = (user) => {
+  return async dispatch => {
+    try {
+      blogService.setToken(user.token)
+      dispatch({
+        type: 'RECOVER',
+        data: user
+      })
+    } catch(error) {
+      dispatch(setMessage(error , true, 5))
     }
   }
 }
