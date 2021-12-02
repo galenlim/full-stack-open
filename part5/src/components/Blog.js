@@ -1,10 +1,9 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { connect, useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { likeBlog, removeBlog } from '../reducers/blogReducer'
-import { setMessage } from '../reducers/messageReducer'
 
-const Blog = ({ blog, likeBlog, removeBlog }) => {
+const Blog = ({ blog }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -14,19 +13,23 @@ const Blog = ({ blog, likeBlog, removeBlog }) => {
   }
 
   const { title, url, author, user, id, likes } = blog
+
   const [view, setView] = useState(false)
+
+  const dispatch = useDispatch()
+  const loggedInUser = useSelector(state => state.user)
 
   const handleView = () => {
     setView(!view)
   }
 
   const handleLike = (blog) => {
-    likeBlog(blog)
+    dispatch(likeBlog(blog))
   }
 
   const handleRemove = (id) => {
     if(window.confirm(`Remove blog ${title} by ${author}`)) {
-      removeBlog(id)
+      dispatch(removeBlog(id))
     }
   }
 
@@ -35,8 +38,6 @@ const Blog = ({ blog, likeBlog, removeBlog }) => {
       {title} {author} <input type="button" value="view" onClick={handleView} />
     </div>
   )
-
-  const loggedInUser = useSelector(state => state.user)
 
   const removeButton = () => {
     if (user.id === loggedInUser.id) {
@@ -76,11 +77,4 @@ Blog.propTypes = {
   blog: PropTypes.object.isRequired,
 }
 
-const mapDispatchToProps = {
-  likeBlog,
-  removeBlog,
-  setMessage
-}
-
-const ConnectedBlog = connect(null, mapDispatchToProps)(Blog)
-export default ConnectedBlog
+export default Blog
