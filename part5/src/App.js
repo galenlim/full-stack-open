@@ -5,6 +5,7 @@ import CreateBlogForm from './components/CreateBlogForm'
 import Message from './components/Message'
 import Togglable from './components/Togglable'
 import Users from './components/Users'
+import User from './components/User'
 import { connect } from 'react-redux'
 import { useSelector, useDispatch } from 'react-redux'
 import { setMessage } from './reducers/messageReducer'
@@ -12,7 +13,7 @@ import { initializeBlogs } from './reducers/blogReducer'
 import { logoutUser, recoverUser } from './reducers/loginReducer'
 import {
   BrowserRouter as Router,
-  Switch, Route
+  Switch, Route,
 } from 'react-router-dom'
 
 const App = () => {
@@ -54,6 +55,9 @@ const App = () => {
       </div>
 
       <Switch>
+        <Route path="/users/:id">
+          <User />
+        </Route>
         <Route path="/users">
           <Users />
         </Route>

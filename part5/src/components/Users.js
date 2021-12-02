@@ -3,7 +3,17 @@ import { useSelector } from 'react-redux'
 
 const Users = () => {
   const blogs = useSelector(state => state.blogs)
-  const users = [...new Set(blogs.map(blog => blog.user.name))]
+  const users = []
+  const usersMap = new Map()
+  blogs.forEach(blog => {
+    if (!usersMap.has(blog.user.id)) {
+      usersMap.set(blog.user.id, true)
+      users.push({
+        id: blog.user.id,
+        name: blog.user.name
+      })
+    }
+  })
 
   return (
     <div>
@@ -18,9 +28,9 @@ const Users = () => {
         <tbody>
           {
             users.map(user =>
-              <tr key={user}>
-                <td>{user}</td>
-                <td>{blogs.filter(blog => blog.user.name === user).length}</td>
+              <tr key={user.id}>
+                <td><a href={`/users/${user.id}`}>{user.name}</a></td>
+                <td>{blogs.filter(blog => blog.user.id === user.id).length}</td>
               </tr>
             )
           }
