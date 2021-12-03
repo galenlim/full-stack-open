@@ -1,20 +1,21 @@
 import React, { useState } from 'react'
-import { connect } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { createBlog } from '../reducers/blogReducer'
 import { setMessage } from '../reducers/messageReducer'
 
-const CreateBlogForm = (props) => {
+const CreateBlogForm = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+  const dispatch = useDispatch()
 
   const addBlog =  async (event) => {
     event.preventDefault()
     try {
-      props.createBlog({ title, author, url })
-      props.setMessage(`a new blog ${title} by ${author} added`, false, 5)
+      dispatch(createBlog({ title, author, url }))
+      dispatch(setMessage(`a new blog ${title} by ${author} added`, false, 5))
     } catch (error) {
-      props.setMessage(error.message, true, 3)
+      dispatch(setMessage(error.message, true, 3))
     }
 
     setTitle('')
@@ -35,10 +36,4 @@ const CreateBlogForm = (props) => {
   )
 }
 
-const mapDispatchToProps = {
-  createBlog,
-  setMessage
-}
-
-const ConnectedCreateBlogForm = connect(null, mapDispatchToProps)(CreateBlogForm)
-export default ConnectedCreateBlogForm
+export default CreateBlogForm
