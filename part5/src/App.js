@@ -6,6 +6,7 @@ import Message from './components/Message'
 import Togglable from './components/Togglable'
 import Users from './components/Users'
 import User from './components/User'
+import SingleBlog from './components/SingleBlog'
 import { connect } from 'react-redux'
 import { useSelector, useDispatch } from 'react-redux'
 import { setMessage } from './reducers/messageReducer'
@@ -50,11 +51,14 @@ const App = () => {
         <Message />
         <p id="logged-in-message">
           { user.name } logged in
-          <input type="button" value="logout" onClick={handleLogout} />
         </p>
+        <input type="button" value="logout" onClick={handleLogout} />
       </div>
 
       <Switch>
+        <Route path="/blogs/:id">
+          <SingleBlog />
+        </Route>
         <Route path="/users/:id">
           <User />
         </Route>

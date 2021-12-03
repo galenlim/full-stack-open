@@ -1,7 +1,5 @@
-import React, { useState } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
-import { useDispatch, useSelector } from 'react-redux'
-import { likeBlog, removeBlog } from '../reducers/blogReducer'
 
 const Blog = ({ blog }) => {
   const blogStyle = {
@@ -12,63 +10,17 @@ const Blog = ({ blog }) => {
     marginBottom: 5
   }
 
-  const { title, url, author, user, id, likes } = blog
-
-  const [view, setView] = useState(false)
-
-  const dispatch = useDispatch()
-  const loggedInUser = useSelector(state => state.user)
-
-  const handleView = () => {
-    setView(!view)
-  }
-
-  const handleLike = (blog) => {
-    dispatch(likeBlog(blog))
-  }
-
-  const handleRemove = (id) => {
-    if(window.confirm(`Remove blog ${title} by ${author}`)) {
-      dispatch(removeBlog(id))
-    }
-  }
+  const { title, id, author } = blog
 
   const HiddenBlog = () => (
     <div>
-      {title} {author} <input type="button" value="view" onClick={handleView} />
-    </div>
-  )
-
-  const removeButton = () => {
-    if (user.id === loggedInUser.id) {
-      return (
-        <input type="button" value="remove" onClick={() => handleRemove(id)} />
-      )
-    }
-  }
-
-  const likeButton = () => {
-    return (
-      <input type="button" value="like" onClick={() => handleLike(blog)} />
-    )
-  }
-
-  const DisplayedBlog = () => (
-    <div>
-      {title} {author} <input type="button" value="hide" onClick={handleView} />
-      <div>{url}</div>
-      <div>likes {likes} {likeButton()}</div>
-      <div>{user.name}</div>
-      <div>{removeButton()}</div>
+      <a href={`/blogs/${id}`}>{title} {author}</a>
     </div>
   )
 
   return (
     <div style={blogStyle} className="blogDiv">
-      {view
-        ? <DisplayedBlog />
-        : <HiddenBlog />
-      }
+      <HiddenBlog />
     </div>
   )
 }
