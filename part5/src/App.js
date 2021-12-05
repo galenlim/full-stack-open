@@ -7,11 +7,12 @@ import Togglable from './components/Togglable'
 import Users from './components/Users'
 import User from './components/User'
 import SingleBlog from './components/SingleBlog'
+import Menu from './components/Menu'
 import { connect } from 'react-redux'
 import { useSelector, useDispatch } from 'react-redux'
 import { setMessage } from './reducers/messageReducer'
 import { initializeBlogs } from './reducers/blogReducer'
-import { logoutUser, recoverUser } from './reducers/loginReducer'
+import { recoverUser } from './reducers/loginReducer'
 import {
   BrowserRouter as Router,
   Switch, Route,
@@ -30,10 +31,6 @@ const App = () => {
     }
   }, [])
 
-  const handleLogout = () => {
-    dispatch(logoutUser())
-  }
-
   if (user === null) {
     return (
       <div>
@@ -47,12 +44,9 @@ const App = () => {
   return (
     <Router>
       <div>
-        <h2>blogs</h2>
+        <Menu />
+        <h2>blog app</h2>
         <Message />
-        <p id="logged-in-message">
-          { user.name } logged in
-        </p>
-        <input type="button" value="logout" onClick={handleLogout} />
       </div>
 
       <Switch>
@@ -66,7 +60,7 @@ const App = () => {
           <Users />
         </Route>
         <Route path="/">
-          <Togglable buttonLabel="create new blog">
+          <Togglable buttonLabel="create new">
             <CreateBlogForm />
           </Togglable>
           <BlogList />
