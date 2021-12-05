@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 
 const Blog = ({ blog }) => {
@@ -14,7 +15,7 @@ const Blog = ({ blog }) => {
 
   const HiddenBlog = () => (
     <div>
-      <a href={`/blogs/${id}`}>{title} {author}</a>
+      <Link to={`/blogs/${id}`}>{title} {author}</Link>
     </div>
   )
 
