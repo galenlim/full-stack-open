@@ -1,7 +1,9 @@
 import React from 'react'
-import { connect } from 'react-redux'
+import { useSelector } from 'react-redux'
 
-const Message = ({ content, isError }) => {
+const Message = () => {
+  const content = useSelector(state => state.message.content)
+  const isError = useSelector(state => state.message.isError)
   if (!content) {
     return null
   }
@@ -15,12 +17,4 @@ const Message = ({ content, isError }) => {
   )
 }
 
-const mapStateToProps = (state) => {
-  return {
-    content: state.message.content,
-    isError: state.message.isError
-  }
-}
-
-const ConnectedMessage = connect(mapStateToProps)(Message)
-export default ConnectedMessage
+export default Message
