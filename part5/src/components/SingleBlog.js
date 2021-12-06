@@ -12,13 +12,13 @@ const SingleBlog = () => {
 
   const blog = blogs.find(blog => blog.id === id)
   if (blogs.length === 0) return null
-  const { title,  url, likes, user, author } = blog
+  const { title,  url, likes, user, author, comments } = blog
 
   const handleLike = (blog) => {
     dispatch(likeBlog(blog))
   }
 
-  const likeButton = () => {
+  const LikeButton = () => {
     return (
       <input type="button" value="like" onClick={() => handleLike(blog)} />
     )
@@ -43,9 +43,16 @@ const SingleBlog = () => {
     <div>
       <h2>{title}</h2>
       <div><a href={url}>{url}</a></div>
-      <div>{likes} likes {likeButton()}</div>
+      <div>{likes} likes <LikeButton /></div>
       <div>added by {user.name}</div>
       <div>{removeButton()}</div>
+      <h3>comments</h3>
+      <ul>
+        {comments
+          .map((comment, index) =>
+            <li key={index}>{comment}</li>
+          )}
+      </ul>
     </div>
   )
 }
