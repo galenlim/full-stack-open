@@ -8,9 +8,7 @@ import Users from './components/Users'
 import User from './components/User'
 import SingleBlog from './components/SingleBlog'
 import Menu from './components/Menu'
-import { connect } from 'react-redux'
 import { useSelector, useDispatch } from 'react-redux'
-import { setMessage } from './reducers/messageReducer'
 import { initializeBlogs } from './reducers/blogReducer'
 import { recoverUser } from './reducers/loginReducer'
 import {
@@ -70,9 +68,4 @@ const App = () => {
   )
 }
 
-const mapDispatchToProps = {
-  setMessage
-}
-
-const ConnectedApp = connect(null, mapDispatchToProps)(App)
-export default ConnectedApp
+export default App
