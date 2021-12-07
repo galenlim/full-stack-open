@@ -1,4 +1,5 @@
 import React from 'react'
+import Comments from '../components/Comments'
 import { useSelector, useDispatch } from 'react-redux'
 import { useParams, useHistory } from 'react-router-dom'
 import { likeBlog, removeBlog } from '../reducers/blogReducer'
@@ -46,13 +47,7 @@ const SingleBlog = () => {
       <div>{likes} likes <LikeButton /></div>
       <div>added by {user.name}</div>
       <div>{removeButton()}</div>
-      <h3>comments</h3>
-      <ul>
-        {comments
-          .map((comment, index) =>
-            <li key={index}>{comment}</li>
-          )}
-      </ul>
+      <Comments comments={comments} id={id} />
     </div>
   )
 }

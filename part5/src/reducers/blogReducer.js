@@ -13,6 +13,12 @@ const reducer = (state = [], action) => {
       .map(blog =>
         blog.id === id ? { ...action.data, user: blog.user } : blog)
   }
+  case 'COMMENT_BLOG': {
+    const id = action.data.id
+    return state
+      .map(blog =>
+        blog.id === id ? { ...action.data, user: blog.user } : blog)
+  }
   case 'REMOVE_BLOG': {
     const id = action.data
     return state
@@ -69,6 +75,23 @@ export const removeBlog = (id) => {
       dispatch(setMessage('blog deleted', false, 5))
     } catch(error) {
       dispatch(setMessage(error.message, true, 3))
+    }
+  }
+}
+
+export const commentBlog = ({ newComments, id }) => {
+  return async dispatch => {
+    try {
+      const updatedComments = {
+        comments: newComments
+      }
+      const commentedBlog = await blogService.comment(id, updatedComments)
+      dispatch({
+        type: 'COMMENT_BLOG',
+        data: commentedBlog
+      })
+    } catch(error) {
+      console.log(error)
     }
   }
 }
