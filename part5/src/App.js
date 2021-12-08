@@ -15,6 +15,7 @@ import {
   BrowserRouter as Router,
   Switch, Route,
 } from 'react-router-dom'
+import Container from '@material-ui/core/Container'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -31,40 +32,44 @@ const App = () => {
 
   if (user === null) {
     return (
-      <div>
-        <h2>Log in to the application</h2>
-        <Message />
-        <LoginForm />
-      </div>
+      <Container>
+        <div>
+          <h2>Log in to the application</h2>
+          <Message />
+          <LoginForm />
+        </div>
+      </Container>
     )
   }
 
   return (
-    <Router>
-      <div>
-        <Menu />
-        <h2>blog app</h2>
-        <Message />
-      </div>
+    <Container>
+      <Router>
+        <div>
+          <Menu />
+          <h2>blog app</h2>
+          <Message />
+        </div>
 
-      <Switch>
-        <Route path="/blogs/:id">
-          <SingleBlog />
-        </Route>
-        <Route path="/users/:id">
-          <User />
-        </Route>
-        <Route path="/users">
-          <Users />
-        </Route>
-        <Route path="/">
-          <Togglable buttonLabel="create new">
-            <CreateBlogForm />
-          </Togglable>
-          <BlogList />
-        </Route>
-      </Switch>
-    </Router>
+        <Switch>
+          <Route path="/blogs/:id">
+            <SingleBlog />
+          </Route>
+          <Route path="/users/:id">
+            <User />
+          </Route>
+          <Route path="/users">
+            <Users />
+          </Route>
+          <Route path="/">
+            <Togglable buttonLabel="create new">
+              <CreateBlogForm />
+            </Togglable>
+            <BlogList />
+          </Route>
+        </Switch>
+      </Router>
+    </Container>
   )
 }
 
