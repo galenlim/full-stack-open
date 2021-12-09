@@ -3,6 +3,9 @@ import Comments from '../components/Comments'
 import { useSelector, useDispatch } from 'react-redux'
 import { useParams, useHistory } from 'react-router-dom'
 import { likeBlog, removeBlog } from '../reducers/blogReducer'
+import {
+  Button,
+} from '@material-ui/core'
 
 const SingleBlog = () => {
   const id = useParams().id
@@ -21,7 +24,9 @@ const SingleBlog = () => {
 
   const LikeButton = () => {
     return (
-      <input type="button" value="like" onClick={() => handleLike(blog)} />
+      <Button variant="contained" color="primary" value="like" onClick={() => handleLike(blog)}>
+        like
+      </Button>
     )
   }
 
@@ -35,7 +40,9 @@ const SingleBlog = () => {
   const removeButton = () => {
     if (user.id === loggedInUser.id) {
       return (
-        <input type="button" value="remove" onClick={() => handleRemove(id)} />
+        <Button variant="contained" color="primary" value="remove" onClick={() => handleRemove(id)}>
+          remove
+        </Button>
       )
     }
   }
