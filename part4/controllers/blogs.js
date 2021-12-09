@@ -2,7 +2,7 @@ const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
 const userExtractor = require('../utils/middleware').userExtractor
 
-blogsRouter.get('/', async (request, response) => {
+blogsRouter.get('/', userExtractor, async (request, response) => {
     const blogs = await Blog
         .find({}).populate('user', { blogs: 0 })
     response.json(blogs)
