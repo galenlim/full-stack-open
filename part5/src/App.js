@@ -19,7 +19,6 @@ import Container from '@material-ui/core/Container'
 
 const App = () => {
   const dispatch = useDispatch()
-  useEffect(() => { dispatch(initializeBlogs()) }, [dispatch])
 
   const user = useSelector(state => state.user)
   useEffect(() => {
@@ -29,6 +28,8 @@ const App = () => {
       dispatch(recoverUser(user))
     }
   }, [])
+
+  useEffect(() => { dispatch(initializeBlogs()) }, [dispatch])
 
   if (user === null) {
     return (

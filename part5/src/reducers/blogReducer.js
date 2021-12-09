@@ -1,6 +1,5 @@
 import blogService from '../services/blogs'
 import { setMessage } from '../reducers/messageReducer'
-import { logoutUser } from '../reducers/loginReducer'
 
 const reducer = (state = [], action) => {
   switch (action.type) {
@@ -33,15 +32,11 @@ const reducer = (state = [], action) => {
 //action creators
 export const initializeBlogs = () => {
   return async dispatch => {
-    try {
-      const blogs = await blogService.getAll()
-      dispatch({
-        type: 'INIT_BLOGS',
-        data: blogs
-      })
-    } catch (error) {
-      if (error.response.status === 401) dispatch(logoutUser())
-    }
+    const blogs = await blogService.getAll()
+    dispatch({
+      type: 'INIT_BLOGS',
+      data: blogs
+    })
   }
 }
 
