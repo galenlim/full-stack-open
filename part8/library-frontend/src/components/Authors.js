@@ -10,6 +10,7 @@ query {
   }
 }
 `
+
 const Authors = (props) => {
   const result = useQuery(ALL_AUTHORS)
 
