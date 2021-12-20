@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import { gql, useMutation } from '@apollo/client'
+import Select from 'react-select'
+import { gql, useQuery, useMutation } from '@apollo/client'
 
 const UPDATE_AUTHOR = gql`
 mutation editAuthor($name: String!, $born: Int!) {
@@ -14,11 +15,23 @@ mutation editAuthor($name: String!, $born: Int!) {
 }
 `
 
+const ALL_AUTHORS = gql`
+query {
+  allAuthors {
+    name
+    id
+  }
+}
+`
+
 const SetBirthYear = () => {
   const [name, setName] = useState('')
   const [born, setBorn] = useState('')
 
   const [ updateAuthor ] = useMutation(UPDATE_AUTHOR)
+  const { data: authorData, loading } = useQuery(ALL_AUTHORS)
+  if (loading) return <div></div>
+  const options = authorData.allAuthors.map(author => ({ label: author.name, value: author.name }))
 
   const submit = async (event) => {
     event.preventDefault()
@@ -34,11 +47,7 @@ const SetBirthYear = () => {
       <h2>Set birthyear</h2>
       <form onSubmit={submit}>
         <div>
-          name
-          <input
-            value={name}
-            onChange={({ target }) => setName(target.value)}
-          />
+          <Select placeholder="Name" options={options} onChange={(event) => setName(event.value)} />
         </div>
         <div>
           born
