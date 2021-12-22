@@ -59,10 +59,10 @@ const typeDefs = gql`
 `
 const resolvers = {
   Query: {
-    bookCount: () => books.length,
-    authorCount: () => authors.length,
-    allBooks: (root, args) => {
-      let results = books
+    bookCount: () => Book.collection.countDocuments(),
+    authorCount: () => Author.collection.countDocuments(),
+    allBooks: async (root, args) => {
+      let results = await Book.find({})
       if (args.author) {
         results = results.filter(book => book.author === args.author)
       } 
@@ -71,29 +71,37 @@ const resolvers = {
       }
       return results
     },
-    allAuthors: () => authors
+    allAuthors: async () => await Author.find({})
   },
   Author: {
-    bookCount: (root) => 
-      books.filter(book => book.author === root.name).length
+    bookCount: async (root) => 
+    await Book.find( { author: { $in: [ root.id ] } } ).countDocuments()
+  },
+  Book: {
+    author: async (root) => await Author.findById(root.author)
   },
   Mutation: {
-    addBook: (root, args) => {
-      const book = new Book({ ...args })
+    addBook: async (root, args) => {
+      let author = await Author.findOne({ name: args.author })
+      if (!author) {
+        author = new Author({ name: args.author, born: null })
+        await author.save()
+      }
+      const book = new Book({ ...args, author })
       return book.save()
     },
     addAuthor: (root, args) => {
       const author = new Author({ ...args })
       return author.save()
     },
-    editAuthor: (root, args) => {
-      const author = authors.find(a => a.name === args.name)
-      if (!author) {
-        return null
-      }
+    editAuthor: async (root, args) => {
+      const updatedAuthor = await Author.findOneAndUpdate(
+        { name: args.name }, 
+        { born: args.setBornTo }, 
+        { new: true }
+      )
+      if (!updatedAuthor) return null
 
-      const updatedAuthor = { ...author, born: args.setBornTo }
-      authors = authors.map(a => a.name === args.name ? updatedAuthor : a)
       return updatedAuthor
     }
   },
