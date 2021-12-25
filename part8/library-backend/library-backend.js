@@ -96,7 +96,10 @@ const resolvers = {
       }
       return results
     },
-    allAuthors: async () => await Author.find({})
+    allAuthors: async () => await Author.find({}),
+    me: (root, args, context) => {
+      return context.currentUser
+    }
   },
   Author: {
     bookCount: async (root) =>
@@ -182,9 +185,21 @@ const resolvers = {
   }
 }
 
+const context = async ({ req }) => {
+  const auth = req ? req.headers.authorization : null
+  if (auth && auth.toLowerCase().startsWith('bearer ')) {
+    const decodedToken = jwt.verify(
+      auth.substring(7), JWT_SECRET
+    )
+    const currentUser = await User.findById(decodedToken.id)
+    return { currentUser }
+  }
+}
+
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  context
 })
 
 server.listen().then(({ url }) => {
