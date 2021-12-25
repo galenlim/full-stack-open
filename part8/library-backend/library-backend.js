@@ -4,8 +4,9 @@ const mongoose = require('mongoose')
 
 const Book = require('./models/book')
 const Author = require('./models/author')
+const User = require('./models/user')
 
-const MONGODB_URI = process.env.MONGODB_URI 
+const MONGODB_URI = process.env.MONGODB_URI
 
 console.log('connecting to', MONGODB_URI)
 
@@ -33,11 +34,22 @@ const typeDefs = gql`
     bookCount: Int!
   }
 
+  type User {
+    username: String!
+    favoriteGenre: String!
+    id: ID!
+  }
+
+  type Token {
+    value: String!
+  }
+
   type Query {
     bookCount: Int!,
     authorCount: Int!
     allBooks(author: String, genre: String): [Book!]!
     allAuthors: [Author!]!
+    me: User
   }
 
   type Mutation {
@@ -55,8 +67,21 @@ const typeDefs = gql`
       name: String!,
       setBornTo: Int!
     ): Author
+    createUser(
+      username: String!
+      favoriteGenre: String!
+    ): User
+    login(
+      username: String!
+      password: String!
+    ): Token
   }
 `
+
+const jwt = require('jsonwebtoken')
+
+const JWT_SECRET = process.env.JWT_SECRET
+
 const resolvers = {
   Query: {
     bookCount: () => Book.collection.countDocuments(),
@@ -65,7 +90,7 @@ const resolvers = {
       let results = await Book.find({})
       if (args.author) {
         results = results.filter(book => book.author === args.author)
-      } 
+      }
       if (args.genre) {
         results = results.filter(book => book.genres.includes(args.genre))
       }
@@ -74,8 +99,8 @@ const resolvers = {
     allAuthors: async () => await Author.find({})
   },
   Author: {
-    bookCount: async (root) => 
-    await Book.find( { author: { $in: [ root.id ] } } ).countDocuments()
+    bookCount: async (root) =>
+      await Book.find( { author: { $in: [ root.id ] } } ).countDocuments()
   },
   Book: {
     author: async (root) => await Author.findById(root.author)
@@ -120,15 +145,27 @@ const resolvers = {
     },
     editAuthor: async (root, args) => {
       const updatedAuthor = await Author.findOneAndUpdate(
-        { name: args.name }, 
-        { born: args.setBornTo }, 
+        { name: args.name },
+        { born: args.setBornTo },
         { new: true }
       )
       if (!updatedAuthor) return null
 
       return updatedAuthor
+    },
+    createUser: async (root, args) => {
+      const user = new User({ username:args.username })
+
+      try {
+        await user.save()
+        return user
+      } catch (error) {
+        throw new UserInputError(error.message, {
+          invalidArgs: args
+        })
+      }
     }
-  },
+  }
 }
 
 const server = new ApolloServer({
