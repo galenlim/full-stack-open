@@ -1,5 +1,5 @@
 require('dotenv').config()
-const { ApolloServer, gql, UserInputError } = require('apollo-server')
+const { ApolloServer, gql, UserInputError, AuthenticationError } = require('apollo-server')
 const mongoose = require('mongoose')
 
 const Book = require('./models/book')
@@ -109,7 +109,11 @@ const resolvers = {
     author: async (root) => await Author.findById(root.author)
   },
   Mutation: {
-    addBook: async (root, args) => {
+    addBook: async (root, args, context) => {
+      if (!context.currentUser) {
+        throw new AuthenticationError('not authenticated')
+      }
+
       let author = await Author.findOne({ name: args.author })
       let newAuthor
       if (!author) {
@@ -146,7 +150,11 @@ const resolvers = {
       }
       return author
     },
-    editAuthor: async (root, args) => {
+    editAuthor: async (root, args, context) => {
+      if (!context.currentUser) {
+        throw new AuthenticationError('not authenticated')
+      }
+
       const updatedAuthor = await Author.findOneAndUpdate(
         { name: args.name },
         { born: args.setBornTo },
