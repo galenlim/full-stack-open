@@ -1,30 +1,9 @@
 import React, { useState } from 'react'
 import Select from 'react-select'
-import { gql, useQuery, useMutation } from '@apollo/client'
+import { useQuery, useMutation } from '@apollo/client'
+import { UPDATE_AUTHOR, ALL_AUTHORS } from '../queries'
 
-const UPDATE_AUTHOR = gql`
-mutation editAuthor($name: String!, $born: Int!) {
-    editAuthor(
-      name: $name,
-      setBornTo: $born,
-    ) {
-      id
-      name
-      born
-    }
-}
-`
-
-const ALL_AUTHORS = gql`
-query {
-  allAuthors {
-    name
-    id
-  }
-}
-`
-
-const SetBirthYear = () => {
+const SetBirthYear = (props) => {
   const [name, setName] = useState('')
   const [born, setBorn] = useState('')
 
@@ -32,6 +11,10 @@ const SetBirthYear = () => {
   const { data: authorData, loading } = useQuery(ALL_AUTHORS)
   if (loading) return <div></div>
   const options = authorData.allAuthors.map(author => ({ label: author.name, value: author.name }))
+
+  if (!props.show) {
+    return null
+  }
 
   const submit = async (event) => {
     event.preventDefault()
