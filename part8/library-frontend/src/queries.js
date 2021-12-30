@@ -41,6 +41,15 @@ query {
   }
 }
 `
+
+export const CURRENT_USER = gql`
+query {
+  me {
+    favoriteGenre
+  }
+}
+`
+
 export const UPDATE_AUTHOR = gql`
 mutation editAuthor($name: String!, $born: Int!) {
     editAuthor(
