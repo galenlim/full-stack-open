@@ -76,11 +76,18 @@ const typeDefs = gql`
       password: String!
     ): Token
   }
+
+  type Subscription {
+    bookAdded: Book!
+  }
 `
 
 const jwt = require('jsonwebtoken')
 
 const JWT_SECRET = process.env.JWT_SECRET
+
+const { PubSub } = require('graphql-subscriptions')
+const pubsub = new PubSub()
 
 const resolvers = {
   Query: {
@@ -137,6 +144,9 @@ const resolvers = {
           invalidArgs: args
         })
       }
+
+      pubsub.publish('BOOK_ADDED', { bookAdded: book })
+
       return book
     },
     addAuthor: async (root, args) => {
@@ -190,6 +200,11 @@ const resolvers = {
 
       return { value: jwt.sign(userForToken, JWT_SECRET) }
     }
+  },
+  Subscription: {
+    bookAdded: {
+      subscribe: () => pubsub.asyncIterator(['BOOK_ADDED'])
+    }
   }
 }
 
@@ -210,6 +225,7 @@ const server = new ApolloServer({
   context
 })
 
-server.listen().then(({ url }) => {
+server.listen().then(({ url, subscriptionsUrl }) => {
   console.log(`Server ready at ${url}`)
+  console.log(`Subscriptions ready at ${subscriptionsUrl}`)
 })
